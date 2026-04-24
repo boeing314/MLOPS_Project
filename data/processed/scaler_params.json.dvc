@@ -1,0 +1,5 @@
+outs:
+- md5: 2ce7c276e41ee1e87cc70a140d8545c2
+  size: 264
+  hash: md5
+  path: scaler_params.json
