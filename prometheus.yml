@@ -1,6 +1,3 @@
-# ── prometheus.yml ─────────────────────────────────────────────────────────────
-# Save as: prometheus.yml in project root
-
 global:
   scrape_interval: 15s        # scrape every 15 seconds
   evaluation_interval: 15s

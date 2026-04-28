@@ -1,9 +1,6 @@
-# ── Docker Compose ─────────────────────────────────────────────────────────────
-# Run: docker-compose up --build
-
 services:
 
-  # ── MLflow Tracking Server ────────────────────────────────────────────────────
+
   mlflow:
     image: ghcr.io/mlflow/mlflow:latest
     container_name: heart-mlflow
@@ -32,7 +29,7 @@ services:
       start_period: 30s
     restart: unless-stopped
 
-  # ── Backend: FastAPI ──────────────────────────────────────────────────────────
+
   backend:
     build:
       context: .
@@ -51,7 +48,7 @@ services:
         condition: service_healthy
     restart: unless-stopped
 
-  # ── Frontend: React ───────────────────────────────────────────────────────────
+
   frontend:
     build:
       context: .
@@ -63,7 +60,7 @@ services:
       - backend
     restart: unless-stopped
 
-  # ── Prometheus ────────────────────────────────────────────────────────────────
+
   prometheus:
     image: prom/prometheus:latest
     container_name: heart-prometheus
@@ -75,7 +72,6 @@ services:
       - backend
     restart: unless-stopped
 
-  # ── Grafana ───────────────────────────────────────────────────────────────────
   grafana:
     image: grafana/grafana:latest
     container_name: heart-grafana
@@ -87,3 +83,8 @@ services:
     depends_on:
       - prometheus
     restart: unless-stopped
+    volumes:
+      - grafana_data:/var/lib/grafana
+
+volumes:
+  grafana_data:

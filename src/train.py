@@ -1,12 +1,3 @@
-"""
-train.py - Model Training with MLflow Tracking for Heart Disease Diagnostic System
-Run directly : python src/train.py
-Run via MLflow Projects:
-    mlflow run . -e train
-    mlflow run . -e train -P n_estimators=200
-    mlflow run . -e train -P n_estimators=200 -P learning_rate=0.05 -P random_state=0
-"""
-
 import os
 import json
 import argparse
@@ -27,7 +18,6 @@ from sklearn.metrics         import (
     confusion_matrix, classification_report
 )
 
-# ── Argument Parser ────────────────────────────────────────────────────────────
 def parse_args():
     parser = argparse.ArgumentParser(
         description="Train Heart Disease Diagnostic Models"
@@ -60,12 +50,10 @@ def parse_args():
     return parser.parse_args()
 
 
-# ── Config ─────────────────────────────────────────────────────────────────────
 TARGET_COL        = "target"
 MLFLOW_EXPERIMENT = "heart-disease-diagnosis"
 
 
-# ── Helper: Get Current Git Commit Hash ───────────────────────────────────────
 def get_git_commit_hash() -> str:
     try:
         return subprocess.check_output(
@@ -75,7 +63,6 @@ def get_git_commit_hash() -> str:
         return "git-not-available"
 
 
-# ── Helper: Load and Split Data ───────────────────────────────────────────────
 def load_and_split(filepath: str, test_size: float, random_state: int):
     df = pd.read_csv(filepath)
     print(f"Loaded processed data: {df.shape[0]} rows, {df.shape[1]} columns")
@@ -89,8 +76,6 @@ def load_and_split(filepath: str, test_size: float, random_state: int):
     print(f"Train size: {len(X_train)}, Test size: {len(X_test)}")
     return X_train, X_test, y_train, y_test
 
-
-# ── Helper: Compute Metrics ───────────────────────────────────────────────────
 def compute_metrics(y_test, y_pred, y_prob) -> dict:
     return {
         "accuracy":  round(accuracy_score(y_test, y_pred), 4),
@@ -101,18 +86,15 @@ def compute_metrics(y_test, y_pred, y_prob) -> dict:
     }
 
 
-# ── Train a Single Model and Log to MLflow ────────────────────────────────────
 def train_and_log(name, model, params, X_train, X_test, y_train, y_test, git_hash):
     print(f"\nTraining: {name}")
 
     with mlflow.start_run(run_name=name, nested=True) as run:
 
-        # ── Train ──────────────────────────────────────────────────────────────
         model.fit(X_train, y_train)
         y_pred = model.predict(X_test)
         y_prob = model.predict_proba(X_test)[:, 1]
 
-        # ── Metrics ────────────────────────────────────────────────────────────
         metrics = compute_metrics(y_test, y_pred, y_prob)
         print(f"  Accuracy : {metrics['accuracy']}")
         print(f"  F1 Score : {metrics['f1_score']}")
@@ -120,13 +102,10 @@ def train_and_log(name, model, params, X_train, X_test, y_train, y_test, git_has
         print(f"  Precision: {metrics['precision']}")
         print(f"  Recall   : {metrics['recall']}")
 
-        # ── Log Params ─────────────────────────────────────────────────────────
         mlflow.log_params(params)
 
-        # ── Log Metrics ────────────────────────────────────────────────────────
         mlflow.log_metrics(metrics)
 
-        # ── Log Extra Info (beyond autolog) ────────────────────────────────────
         mlflow.set_tag("git_commit",   git_hash)
         mlflow.set_tag("model_name",   name)
         mlflow.set_tag("test_size",    params["test_size"])
@@ -140,7 +119,6 @@ def train_and_log(name, model, params, X_train, X_test, y_train, y_test, git_has
         mlflow.log_artifact(cm_path)
         os.remove(cm_path)
 
-        # Log classification report as a text artifact
         report = classification_report(y_test, y_pred)
         report_path = f"classification_report_{name}.txt"
         with open(report_path, "w") as f:
@@ -148,7 +126,6 @@ def train_and_log(name, model, params, X_train, X_test, y_train, y_test, git_has
         mlflow.log_artifact(report_path)
         os.remove(report_path)
 
-        # Log feature importances for tree-based models
         if hasattr(model, "feature_importances_"):
             importances = dict(zip(
                 X_train.columns.tolist(),
@@ -160,7 +137,6 @@ def train_and_log(name, model, params, X_train, X_test, y_train, y_test, git_has
             mlflow.log_artifact(imp_path)
             os.remove(imp_path)
 
-        # ── Log Model ──────────────────────────────────────────────────────────
         signature = infer_signature(X_train, y_pred)
         mlflow.sklearn.log_model(
             sk_model=model,

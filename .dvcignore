@@ -1,3 +1,33 @@
-# Add patterns of files dvc should ignore, which could improve
-# the performance. Learn more at
-# https://dvc.org/doc/user-guide/dvcignore
+# Python / cache
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Git / editor
+.git/
+.vscode/
+.idea/
+
+# MLflow runtime artifacts
+mlruns/
+mlflow.db
+
+# Frontend dependencies/build
+frontend/node_modules/
+frontend/dist/
+
+# Airflow runtime
+airflow/logs/
+airflow/*.db
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Docker temp / local volumes
+*.pid
+*.tmp

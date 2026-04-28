@@ -107,9 +107,16 @@ export default function App() {
                     value={form[field.key]}
                     onChange={e => handleChange(field.key, e.target.value)}
                   >
-                    <option value="">Select...</option>
+                    <option value="" style={styles.option}>Select...</option>
+
                     {field.options.map(o => (
-                      <option key={o.value} value={o.value}>{o.label}</option>
+                      <option
+                        key={o.value}
+                        value={o.value}
+                        style={styles.option}
+                      >
+                        {o.label}
+                      </option>
                     ))}
                   </select>
                 ) : (
@@ -288,6 +295,10 @@ const styles = {
     borderRadius: "10px", color: "#f1f5f9",
     fontSize: "14px", outline: "none", cursor: "pointer",
     appearance: "none",
+  },
+  option: {
+    background: "#0f172a",
+    color: "#f8fafc",
   },
   errorBox: {
     background: "rgba(239,68,68,0.1)",

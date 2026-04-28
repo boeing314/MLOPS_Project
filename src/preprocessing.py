@@ -1,15 +1,8 @@
-"""
-preprocessing.py - Clean and prepare heart disease dataset
-Run: python preprocessing.py
-Output: data/processed/features.csv, data/processed/scaler_params.json
-"""
-
 import os
 import json
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 
-# ── Config ─────────────────────────────────────────────────────────────────────
 RAW_DATA_PATH = "data/raw/heart_dataset.csv"
 OUTPUT_PATH = "data/processed/features.csv"
 SCALER_PARAMS_PATH = "data/processed/scaler_params.json"
@@ -20,7 +13,6 @@ CATEGORICAL_COLS = ['cp', 'restecg', 'slope', 'ca', 'thal']
 TARGET_COL = 'target'
 
 
-# ── Step 1: Load Data ──────────────────────────────────────────────────────────
 def load_data(filepath):
     df = pd.read_csv(filepath, na_values='?')
     df.replace('?', pd.NA, inplace=True)
@@ -31,7 +23,6 @@ def load_data(filepath):
     return df
 
 
-# ── Step 2: Remove Rows With Missing Values ───────────────────────────────────
 def drop_missing_rows(df):
     before = len(df)
     df = df.dropna()
@@ -41,7 +32,6 @@ def drop_missing_rows(df):
     return df
 
 
-# ── Step 3: Convert Types ──────────────────────────────────────────────────────
 def convert_types(df):
     df = df.copy()
 
@@ -55,8 +45,6 @@ def convert_types(df):
     print(f"Removed {before - after} row(s) with invalid datatypes)")
     return df
 
-
-# ── Step 4: Keep Only Valid Range Rows ────────────────────────────────────────
 def validate_ranges(df):
     before = len(df)
 
@@ -85,7 +73,6 @@ def validate_ranges(df):
     return df
 
 
-# ── Step 5: Normalize Numeric Columns ─────────────────────────────────────────
 def normalize_numeric(df):
     df = df.copy()
 
@@ -109,8 +96,6 @@ def normalize_numeric(df):
     print(f"Normalized columns: {NUMERIC_COLS}")
     return df
 
-
-# ── Step 6: One-Hot Encode ────────────────────────────────────────────────────
 def one_hot_encode(df):
     df = pd.get_dummies(
         df,
@@ -123,14 +108,12 @@ def one_hot_encode(df):
     return df
 
 
-# ── Step 7: Save ───────────────────────────────────────────────────────────────
 def save_data(df, filepath):
     os.makedirs(os.path.dirname(filepath), exist_ok=True)
     df.to_csv(filepath, index=False)
     print(f"Saved processed data to {filepath}")
 
 
-# ── Main ───────────────────────────────────────────────────────────────────────
 if __name__ == "__main__":
     print("\n--- Step 1: Load ---")
     df = load_data(RAW_DATA_PATH)

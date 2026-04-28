@@ -143,21 +143,11 @@ pytest tests/test_preprocessing.py -v
 
 | ID | Criteria | Target | Actual | Status |
 |---|---|---|---|---|
-| AC01 | F1 Score | > 0.85 | 0.89 | ✅ MET |
-| AC02 | AUC-ROC | > 0.85 | 0.92 | ✅ MET |
-| AC03 | Inference Latency | < 200ms | ~45ms | ✅ MET |
+| AC01 | F1 Score | > 0.85 | 0.98 | ✅ MET |
+| AC02 | AUC-ROC | > 0.85 | 0.99 | ✅ MET |
+| AC03 | Inference Latency | < 200ms | 102ms | ✅ MET |
 | AC04 | Input Validation | All 422 | All 422 | ✅ MET |
 | AC05 | Pipeline completeness | 7 tasks green | 7 tasks green | ✅ MET |
 
----
 
-### 2.4 Overall Summary
-
-| Category | Total | Passed | Failed |
-|---|---|---|---|
-| Unit Tests | 16 | 16 | 0 |
-| Integration Tests | 9 | 9 | 0 |
-| Acceptance Tests | 5 | 5 | 0 |
-| **Total** | **30** | **30** | **0** |
-
-**All acceptance criteria met. System is ready for demonstration.**
+**All acceptance criteria met.**
