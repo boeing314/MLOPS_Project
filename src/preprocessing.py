@@ -91,6 +91,7 @@ def normalize_numeric(df):
 
     scaler = MinMaxScaler()
     df[NUMERIC_COLS] = scaler.fit_transform(df[NUMERIC_COLS])
+    df[NUMERIC_COLS] = df[NUMERIC_COLS].clip(0.0, 1.0)
 
     scaler_params = {
         col: {

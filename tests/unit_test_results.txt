@@ -1,0 +1,26 @@
+============================= test session starts ==============================
+platform linux -- Python 3.12.3, pytest-9.0.3, pluggy-1.6.0 -- /home/asher747/final_project/venv/bin/python3
+cachedir: .pytest_cache
+rootdir: /home/asher747/final_project
+plugins: hydra-core-1.3.2, anyio-4.13.0
+collecting ... collected 17 items
+
+tests/test_preprocessing.py::test_drop_missing_rows_removes_nan_rows PASSED [  5%]
+tests/test_preprocessing.py::test_drop_missing_rows_correct_count PASSED [ 11%]
+tests/test_preprocessing.py::test_drop_missing_rows_clean_df_unchanged PASSED [ 17%]
+tests/test_preprocessing.py::test_convert_types_removes_invalid_rows PASSED [ 23%]
+tests/test_preprocessing.py::test_convert_types_all_numeric PASSED       [ 29%]
+tests/test_preprocessing.py::test_validate_ranges_removes_out_of_range PASSED [ 35%]
+tests/test_preprocessing.py::test_validate_ranges_valid_df_unchanged PASSED [ 41%]
+tests/test_preprocessing.py::test_validate_ranges_age_bounds PASSED      [ 47%]
+tests/test_preprocessing.py::test_validate_ranges_chol_bounds PASSED     [ 52%]
+tests/test_preprocessing.py::test_normalize_numeric_range PASSED         [ 58%]
+tests/test_preprocessing.py::test_normalize_numeric_saves_scaler_params PASSED [ 64%]
+tests/test_preprocessing.py::test_normalize_binary_cols_unchanged PASSED [ 70%]
+tests/test_preprocessing.py::test_one_hot_encode_creates_new_columns PASSED [ 76%]
+tests/test_preprocessing.py::test_one_hot_encode_removes_original_cols PASSED [ 82%]
+tests/test_preprocessing.py::test_one_hot_encode_values_are_integers PASSED [ 88%]
+tests/test_preprocessing.py::test_one_hot_encode_binary_cols_preserved PASSED [ 94%]
+tests/test_preprocessing.py::test_one_hot_encode_target_preserved PASSED [100%]
+
+============================== 17 passed in 1.43s ==============================

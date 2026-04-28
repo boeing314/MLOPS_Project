@@ -1,0 +1,12 @@
+# ── prometheus.yml ─────────────────────────────────────────────────────────────
+# Save as: prometheus.yml in project root
+
+global:
+  scrape_interval: 15s        # scrape every 15 seconds
+  evaluation_interval: 15s
+
+scrape_configs:
+  - job_name: "heart-disease-backend"
+    static_configs:
+      - targets: ["backend:8000"]   # FastAPI /metrics endpoint
+    metrics_path: /metrics

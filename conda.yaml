@@ -1,0 +1,17 @@
+name: heart-disease-diagnostic
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12
+  - pip
+  - pip:
+    - fastapi==0.111.0
+    - uvicorn==0.30.0
+    - mlflow==3.11.1
+    - scikit-learn==1.8.0
+    - xgboost==3.2.0
+    - pandas==2.3.3
+    - prometheus-client==0.20.0
+    - pydantic==2.13.3
+    - joblib==1.5.3

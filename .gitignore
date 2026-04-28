@@ -21,3 +21,48 @@ venv/
 # OS
 .DS_Store
 Thumbs.db
+
+# Root .gitignore
+
+```gitignore
+# Python
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Env files
+.env
+
+# MLflow
+mlruns/
+mlflow.db
+
+# DVC cache
+.dvc/cache/
+
+# Airflow runtime
+airflow/logs/
+airflow/*.db
+
+# Frontend builds
+dist/
+coverage/
+
+# OS / Editor
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.log
+```
+
+# frontend/.gitignore
+
+```gitignore
+node_modules/
+dist/
+coverage/
+.env
+*.log
+```

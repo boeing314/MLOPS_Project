@@ -1,0 +1,31 @@
+name: heart-disease-diagnostic
+
+conda_env: conda.yaml
+
+entry_points:
+
+  preprocess:
+    parameters:
+      raw_data_path:
+        type: str
+        default: "data/raw/heart_dataset.csv"
+      output_path:
+        type: str
+        default: "data/processed/features.csv"
+    command: "python src/preprocessing.py"
+
+  train:
+    parameters:
+      data_path:
+        type: str
+        default: "data/processed/features.csv"
+      n_estimators:
+        type: int
+        default: 100
+      random_state:
+        type: int
+        default: 42
+    command: "python src/train.py"
+
+  main:
+    command: "python src/preprocessing.py && python src/train.py"
