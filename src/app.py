@@ -1,8 +1,3 @@
-"""
-app.py - FastAPI Backend for Heart Disease Diagnostic System
-Run: uvicorn src.app:app --reload --port 8000
-"""
-
 import os
 import json
 import time
@@ -18,20 +13,17 @@ from fastapi.middleware.cors import CORSMiddleware
 import os
 mlflow.set_tracking_uri(os.getenv("MLFLOW_TRACKING_URI", "http://localhost:5000"))
 
-# ── Logging Setup ──────────────────────────────────────────────────────────────
 logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s"
 )
 logger = logging.getLogger(__name__)
 
-# ── Config ─────────────────────────────────────────────────────────────────────
 SCALER_PARAMS_PATH  = "data/processed/scaler_params.json"
 MODEL_URI = "file:///app/mlruns/1/models/m-7b1f18cf4db346478afca1d43df00147/artifacts"
 NUMERIC_COLS        = ['age', 'trestbps', 'chol', 'thalachh', 'oldpeak']
 CATEGORICAL_COLS    = ['cp', 'restecg', 'slope', 'ca', 'thal']
 
-# ── Prometheus Metrics ─────────────────────────────────────────────────────────
 PREDICTION_COUNT    = Counter(
     "prediction_total",
     "Total number of predictions made",
@@ -52,7 +44,6 @@ ERROR_COUNT         = Counter(
     ["endpoint"]
 )
 
-# ── FastAPI App ────────────────────────────────────────────────────────────────
 app = FastAPI(
     title="Heart Disease Diagnostic System",
     description="Predicts whether a patient is at risk of heart disease based on clinical parameters.",
@@ -61,8 +52,8 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "http://localhost:3000",   # create-react-app
-        "http://localhost:5173",   # vite
+        "http://localhost:3000",   
+        "http://localhost:5173",   
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:3002",
@@ -72,7 +63,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# ── Load Model and Scaler at Startup ──────────────────────────────────────────
 model         = None
 scaler_params = None
 
@@ -98,7 +88,6 @@ def load_model_and_scaler():
         raise RuntimeError(f"Scaler params load failed: {e}")
 
 
-# ── Input Schema ───────────────────────────────────────────────────────────────
 class PatientInput(BaseModel):
     age:      float = Field(..., ge=1,  le=120, description="Age of the patient")
     sex:      int   = Field(..., ge=0,  le=1,   description="1 = male, 0 = female")
@@ -115,14 +104,13 @@ class PatientInput(BaseModel):
     thal:     int   = Field(..., ge=1,  le=3,   description="Thalassemia type (1-3)")
 
 
-# ── Output Schema ──────────────────────────────────────────────────────────────
+
 class PredictionOutput(BaseModel):
-    prediction:  int   # 0 or 1
-    probability: float # probability of heart disease
-    result:      str   # "High Risk" or "Low Risk"
+    prediction:  int   
+    probability: float 
+    result:      str   
 
 
-# ── Helper: Preprocess Input ───────────────────────────────────────────────────
 def preprocess_input(data: PatientInput) -> pd.DataFrame:
     raw = {
         "age":      data.age,
@@ -141,28 +129,22 @@ def preprocess_input(data: PatientInput) -> pd.DataFrame:
     }
     df = pd.DataFrame([raw])
 
-    # Normalize numeric columns using saved scaler params
     for col in NUMERIC_COLS:
         min_val = scaler_params[col]["min"]
         max_val = scaler_params[col]["max"]
         df[col] = (df[col] - min_val) / (max_val - min_val)
 
-    # One-hot encode categorical columns to match training features
     df = pd.get_dummies(df, columns=CATEGORICAL_COLS, drop_first=False, dtype=int)
 
-    # Add any missing columns that were present during training (fill with 0)
     expected_cols = model.feature_names_in_
     for col in expected_cols:
         if col not in df.columns:
             df[col] = 0
 
-    # Reorder columns to match training order
     df = df[expected_cols]
 
     return df
 
-
-# ── Routes ─────────────────────────────────────────────────────────────────────
 
 @app.get("/health")
 def health():
@@ -192,15 +174,13 @@ def predict(patient: PatientInput):
     try:
         logger.info(f"Received prediction request: {patient.dict()}")
 
-        # Preprocess input
         df = preprocess_input(patient)
 
-        # Predict
         prediction = int(model.predict(df)[0])
         probability = round(float(model.predict_proba(df)[0][1]), 4)
         result = "High Risk" if prediction == 1 else "Low Risk"
 
-        # Success metrics
+
         PREDICTION_COUNT.labels(result=result).inc()
 
         logger.info(f"Prediction: {result}, Probability: {probability}")
@@ -217,7 +197,6 @@ def predict(patient: PatientInput):
         raise HTTPException(status_code=500, detail=str(e))
 
     finally:
-        # Always record latency (success or failure)
         PREDICTION_LATENCY.observe(time.time() - start_time)
 
 
